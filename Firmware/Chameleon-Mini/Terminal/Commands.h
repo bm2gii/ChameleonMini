@@ -187,6 +187,12 @@ CommandStatusIdType CommandGetField(char* OutMessage);
 #define COMMAND_CLONE  "CLONE"
 CommandStatusIdType CommandExecClone(char* OutMessage);
 
+#ifdef CONFIG_MF_DETECTION_SUPPORT
+#define COMMAND_DETECTION   "DETECTION"
+CommandStatusIdType CommandGetDetection(char* OutParam);
+CommandStatusIdType CommandSetDetection(char* OutMessage, const char* InParam);
+#endif
+
 #define COMMAND_LIST_END    ""
 /* Defines the end of command list. This is no actual command */
 

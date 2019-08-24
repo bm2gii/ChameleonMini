@@ -19,6 +19,9 @@ static const MapEntryType PROGMEM ConfigurationMap[] = {
     { .Id = CONFIG_MF_ULTRALIGHT_EV1_80B,   .Text = "MF_ULTRALIGHT_EV1_80B" },
     { .Id = CONFIG_MF_ULTRALIGHT_EV1_164B,   .Text = "MF_ULTRALIGHT_EV1_164B" },
 #endif
+#ifdef CONFIG_MF_CLASSIC_MINI_4B_SUPPORT
+    { .Id = CONFIG_MF_CLASSIC_MINI_4B, 	.Text = "MF_CLASSIC_MINI_4B" },
+#endif
 #ifdef CONFIG_MF_CLASSIC_1K_SUPPORT
     { .Id = CONFIG_MF_CLASSIC_1K, 	.Text = "MF_CLASSIC_1K" },
 #endif
@@ -52,6 +55,9 @@ static const MapEntryType PROGMEM ConfigurationMap[] = {
 #ifdef CONFIG_EM4233_SUPPORT
     { .Id = CONFIG_EM4233,	.Text = "EM4233" },
 #endif
+#ifdef CONFIG_MF_DETECTION_SUPPORT
+    { .Id = CONFIG_MF_DETECTION,    .Text = "MF_DETECTION" },
+#endif
 };
 
 /* Include all Codecs and Applications */
@@ -68,6 +74,11 @@ static void ApplicationTickDummy(void) {}
 static uint16_t ApplicationProcessDummy(uint8_t* ByteBuffer, uint16_t ByteCount) { return 0; }
 static void ApplicationGetUidDummy(ConfigurationUidType Uid) { }
 static void ApplicationSetUidDummy(ConfigurationUidType Uid) { }
+// Mods
+static void ApplicationGetAtqaDummy(uint16_t * Atqa) { }
+static void ApplicationSetAtqaDummy(uint16_t Atqa) { }
+static void ApplicationGetSakDummy(uint8_t * Atqa) { }
+static void ApplicationSetSakDummy(uint8_t Atqa) { }
 
 
 static const PROGMEM ConfigurationType ConfigurationTable[] = {
@@ -133,6 +144,24 @@ static const PROGMEM ConfigurationType ConfigurationTable[] = {
         .ApplicationSetUidFunc = MifareUltralightSetUid,
         .UidSize = MIFARE_ULTRALIGHT_UID_SIZE,
         .MemorySize = MIFARE_ULTRALIGHT_EV12_MEM_SIZE,
+        .ReadOnly = false,
+        .TagFamily = TAG_FAMILY_ISO14443A
+    },
+#endif
+#ifdef CONFIG_MF_CLASSIC_MINI_4B_SUPPORT
+    [CONFIG_MF_CLASSIC_MINI_4B] = {
+        .CodecInitFunc = ISO14443ACodecInit,
+        .CodecDeInitFunc = ISO14443ACodecDeInit,
+        .CodecTaskFunc = ISO14443ACodecTask,
+        .ApplicationInitFunc = MifareClassicAppInitMini4B,
+        .ApplicationResetFunc = MifareClassicAppReset,
+        .ApplicationTaskFunc = MifareClassicAppTask,
+        .ApplicationTickFunc = ApplicationTickDummy,
+        .ApplicationProcessFunc = MifareClassicAppProcess,
+        .ApplicationGetUidFunc = MifareClassicGetUid,
+        .ApplicationSetUidFunc = MifareClassicSetUid,
+        .UidSize = MIFARE_CLASSIC_UID_SIZE,
+        .MemorySize = MIFARE_CLASSIC_MINI_MEM_SIZE,
         .ReadOnly = false,
         .TagFamily = TAG_FAMILY_ISO14443A
     },
@@ -335,6 +364,26 @@ static const PROGMEM ConfigurationType ConfigurationTable[] = {
         .TagFamily = TAG_FAMILY_ISO15693
     },
 #endif
+#ifdef CONFIG_MF_DETECTION_SUPPORT
+    [CONFIG_MF_DETECTION] = {
+        .CodecInitFunc = ISO14443ACodecInit,
+        .CodecTaskFunc = ISO14443ACodecTask,
+        .ApplicationInitFunc = MifareDetectionInit,
+        .ApplicationResetFunc = MifareDetectionReset,
+        .ApplicationTaskFunc = MifareClassicAppTask,
+        .ApplicationTickFunc = ApplicationTickDummy,
+        .ApplicationProcessFunc = MifareDetectionAppProcess,
+        .ApplicationGetUidFunc = MifareClassicGetUid,
+        .ApplicationSetUidFunc = MifareClassicSetUid,
+        .ApplicationGetSakFunc = MifareClassicGetSak,
+        .ApplicationSetSakFunc = MifareClassicSetSak,
+        .ApplicationGetAtqaFunc = MifareClassicGetAtqa,
+        .ApplicationSetAtqaFunc = MifareClassicSetAtqa,
+        .UidSize = MIFARE_CLASSIC_UID_SIZE,
+        .MemorySize = MIFARE_CLASSIC_1K_MEM_SIZE,
+        .ReadOnly = false
+},
+#endif
 };
 
 ConfigurationType ActiveConfiguration;
@@ -385,4 +434,5 @@ void ConfigurationGetList(char* List, uint16_t BufferSize)
 {
     MapToString(ConfigurationMap, ARRAY_COUNT(ConfigurationMap), List, BufferSize);
 }
+
 

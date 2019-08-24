@@ -25,6 +25,9 @@ typedef enum  {
     CONFIG_MF_ULTRALIGHT_EV1_80B,
     CONFIG_MF_ULTRALIGHT_EV1_164B,
 #endif
+#ifdef CONFIG_MF_CLASSIC_MINI_4B_SUPPORT
+    CONFIG_MF_CLASSIC_MINI_4B,
+#endif
 #ifdef CONFIG_MF_CLASSIC_1K_SUPPORT
     CONFIG_MF_CLASSIC_1K,
 #endif
@@ -36,6 +39,9 @@ typedef enum  {
 #endif
 #ifdef CONFIG_MF_CLASSIC_4K_7B_SUPPORT
     CONFIG_MF_CLASSIC_4K_7B,
+#endif
+#ifdef CONFIG_MF_DETECTION_SUPPORT
+    CONFIG_MF_DETECTION,
 #endif
 #ifdef CONFIG_ISO14443A_SNIFF_SUPPORT
     CONFIG_ISO14443A_SNIFF,
@@ -128,7 +134,25 @@ typedef struct {
     /**
      * @}
      */
-
+    void (*ApplicationGetSakFunc) (uint8_t * Sak);
+    /**
+     * Writes a given SAK to the current configuration.
+     * \param Sak	The source buffer.
+     */
+    void (*ApplicationSetSakFunc) (uint8_t Sak);
+    /**
+     * Writes the ATQA for the current configuration to the given buffer.
+     * \param Atqa	The target buffer.
+     */
+    void (*ApplicationGetAtqaFunc) (uint16_t * Atqa);
+    /**
+     * Writes a given ATQA to the current configuration.
+     * \param Atqa	The source buffer.
+     */
+    void (*ApplicationSetAtqaFunc) (uint16_t Atqa);
+    /**
+     * @}
+     */
     /**
      * Defines how many space the configuration needs. For emulating configurations this is the memory space of
      * the emulated card.
