@@ -34,11 +34,13 @@ static const MapEntryType PROGMEM ConfigurationMap[] = {
 #ifdef CONFIG_MF_CLASSIC_4K_7B_SUPPORT
     { .Id = CONFIG_MF_CLASSIC_4K_7B, 	.Text = "MF_CLASSIC_4K_7B" },
 #endif
+#ifdef CONFIG_MF_DETECTION_SUPPORT
+    { .Id = CONFIG_MF_DETECTION,    .Text = "MF_DETECTION" },
+    { .Id = CONFIG_MF_DETECTION_4K,    .Text = "MF_DETECTION_4K" },
+    { .Id = CONFIG_MF_DETECTION_MINI,    .Text = "MF_DETECTION_MINI" },
+#endif
 #ifdef CONFIG_ISO14443A_SNIFF_SUPPORT
     { .Id = CONFIG_ISO14443A_SNIFF,	.Text = "ISO14443A_SNIFF" },
-#endif
-#ifdef CONFIG_MF_DETECTION_SUPPORT
-	{ .Id = CONFIG_MF_DETECTION, 	.Text = "MF_DETECTION" },
 #endif
 #ifdef CONFIG_ISO14443A_READER_SUPPORT
     { .Id = CONFIG_ISO14443A_READER,	.Text = "ISO14443A_READER" },
@@ -233,6 +235,53 @@ static const PROGMEM ConfigurationType ConfigurationTable[] = {
         .TagFamily = TAG_FAMILY_ISO14443A
     },
 #endif
+#ifdef CONFIG_MF_DETECTION_SUPPORT
+[CONFIG_MF_DETECTION] = {
+        .CodecInitFunc = ISO14443ACodecInit,
+        .CodecDeInitFunc = Reader14443ACodecDeInit,
+        .CodecTaskFunc = ISO14443ACodecTask,
+        .ApplicationInitFunc = MifareDetectionInit,
+        .ApplicationResetFunc = MifareDetectionReset,
+        .ApplicationTaskFunc = MifareClassicAppTask,
+        .ApplicationTickFunc = ApplicationTickDummy,
+        .ApplicationProcessFunc = MifareDetectionAppProcess,
+        .ApplicationGetUidFunc = MifareClassicGetUid,
+        .ApplicationSetUidFunc = MifareClassicSetUid,
+        .UidSize = MIFARE_CLASSIC_UID_SIZE,
+        .MemorySize = MIFARE_CLASSIC_1K_MEM_SIZE,
+        .ReadOnly = false
+},
+[CONFIG_MF_DETECTION_4K] = {
+        .CodecInitFunc = ISO14443ACodecInit,
+        .CodecDeInitFunc = Reader14443ACodecDeInit,
+        .CodecTaskFunc = ISO14443ACodecTask,
+        .ApplicationInitFunc = MifareDetectionInit4K,
+        .ApplicationResetFunc = MifareDetectionReset,
+        .ApplicationTaskFunc = MifareClassicAppTask,
+        .ApplicationTickFunc = ApplicationTickDummy,
+        .ApplicationProcessFunc = MifareDetectionAppProcess,
+        .ApplicationGetUidFunc = MifareClassicGetUid,
+        .ApplicationSetUidFunc = MifareClassicSetUid,
+        .UidSize = MIFARE_CLASSIC_UID_SIZE,
+        .MemorySize = MIFARE_CLASSIC_4K_MEM_SIZE,
+        .ReadOnly = false
+},
+[CONFIG_MF_DETECTION_MINI] = {
+        .CodecInitFunc = ISO14443ACodecInit,
+        .CodecDeInitFunc = Reader14443ACodecDeInit,
+        .CodecTaskFunc = ISO14443ACodecTask,
+        .ApplicationInitFunc = MifareDetectionInitMini,
+        .ApplicationResetFunc = MifareDetectionReset,
+        .ApplicationTaskFunc = MifareClassicAppTask,
+        .ApplicationTickFunc = ApplicationTickDummy,
+        .ApplicationProcessFunc = MifareDetectionAppProcess,
+        .ApplicationGetUidFunc = MifareClassicGetUid,
+        .ApplicationSetUidFunc = MifareClassicSetUid,
+        .UidSize = MIFARE_CLASSIC_UID_SIZE,
+        .MemorySize = MIFARE_CLASSIC_MINI_MEM_SIZE,
+        .ReadOnly = false
+},
+#endif
 #ifdef CONFIG_ISO14443A_SNIFF_SUPPORT
     [CONFIG_ISO14443A_SNIFF] = {
         .CodecInitFunc = Sniff14443ACodecInit,
@@ -250,23 +299,6 @@ static const PROGMEM ConfigurationType ConfigurationTable[] = {
         .ReadOnly = true,
         .TagFamily = TAG_FAMILY_NONE
     },
-#endif
-#ifdef CONFIG_MF_DETECTION_SUPPORT
-[CONFIG_MF_DETECTION] = {
-	.CodecInitFunc = ISO14443ACodecInit,
-	.CodecDeInitFunc = Reader14443ACodecDeInit,
-	.CodecTaskFunc = ISO14443ACodecTask,
-	.ApplicationInitFunc = MifareDetectionInit,
-	.ApplicationResetFunc = MifareDetectionReset,
-	.ApplicationTaskFunc = MifareClassicAppTask,
-    	.ApplicationTickFunc = ApplicationTickDummy,
-	.ApplicationProcessFunc = MifareDetectionAppProcess,
-	.ApplicationGetUidFunc = MifareClassicGetUid,
-	.ApplicationSetUidFunc = MifareClassicSetUid,
-	.UidSize = MIFARE_CLASSIC_UID_SIZE,
-	.MemorySize = MIFARE_CLASSIC_1K_MEM_SIZE,
-	.ReadOnly = false
-},
 #endif
 #ifdef CONFIG_ISO14443A_READER_SUPPORT
     [CONFIG_ISO14443A_READER] = {

@@ -5,6 +5,8 @@
 #include "ISO14443-3A.h"
 
  void MifareDetectionInit(void);
+ void MifareDetectionInit4K(void);
+ void MifareDetectionInitMini(void);
  void MifareDetectionReset(void);
  uint16_t MifareDetectionAppProcess(uint8_t* Buffer, uint16_t BitCount);
 #endif

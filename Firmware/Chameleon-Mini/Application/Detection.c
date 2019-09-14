@@ -8,10 +8,12 @@
 #include "../Settings.h"
 #include <string.h>
 
-#define MFCLASSIC_1K_ATQA_VALUE     0x0004
-#define MFCLASSIC_4K_ATQA_VALUE     0x0002
-#define MFCLASSIC_1K_SAK_CL1_VALUE  0x08
-#define MFCLASSIC_4K_SAK_CL1_VALUE  0x18
+#define MFCLASSIC_MINI_4B_ATQA_VALUE    0x0004
+#define MFCLASSIC_1K_ATQA_VALUE         0x0004
+#define MFCLASSIC_4K_ATQA_VALUE         0x0002
+#define MFCLASSIC_MINI_4B_SAK_CL1_VALUE     0x09
+#define MFCLASSIC_1K_SAK_CL1_VALUE          0x08
+#define MFCLASSIC_4K_SAK_CL1_VALUE          0x18
 
 #define MEM_UID_CL1_ADDRESS         0x00
 #define MEM_UID_CL1_SIZE            4
@@ -165,6 +167,18 @@ void MifareDetectionInit(void) {
 	State = STATE_IDLE;
 	CardATQAValue = MFCLASSIC_1K_ATQA_VALUE;
 	CardSAKValue = MFCLASSIC_1K_SAK_CL1_VALUE;
+}
+
+void MifareDetectionInit4K(void) {
+	State = STATE_IDLE;
+	CardATQAValue = MFCLASSIC_4K_ATQA_VALUE;
+	CardSAKValue = MFCLASSIC_4K_SAK_CL1_VALUE;
+}
+
+void MifareDetectionInitMini(void) {
+	State = STATE_IDLE;
+	CardATQAValue = MFCLASSIC_MINI_4B_ATQA_VALUE;
+	CardSAKValue = MFCLASSIC_MINI_4B_SAK_CL1_VALUE;
 }
 
 void MifareDetectionReset(void) {
